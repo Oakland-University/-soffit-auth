@@ -1,0 +1,83 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'war'
+    //Third party plugins
+    id 'com.diffplug.gradle.spotless' version '3.14.0'
+    id 'org.owasp.dependencycheck' version '5.3.0'
+}
+
+repositories {
+    // Use jcenter for resolving your dependencies.
+    // You can declare any Maven/Ivy/file repository here.
+    jcenter()
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+
+    repositories {
+        maven {
+          url "https://maven.oakland.edu/nexus/content/repositories/uPortal"
+          name "nexus"
+          credentials {
+            username "$mavenUser"
+            password "$mavenPassword"
+          }
+        }
+    }
+}
+
+group = 'edu.oakland'
+version = '1.0.0.RC'
+
+processResources {
+  filesMatching('**/application.properties') {
+    def props = new Properties()
+
+    file(System.getenv('PORTAL_HOME') + '/uPortal.properties').withInputStream {
+      props.load(it)
+    }
+
+    filter(ReplaceTokens, tokens: props)
+  }
+}
+
+spotless {
+  java {
+    googleJavaFormat()
+    importOrder 'edu', 'java', 'com org', ''
+    removeUnusedImports()
+    trimTrailingWhitespace()
+  }
+}
+
+test {
+    useJUnitPlatform()
+}
+
+clean.finalizedBy 'spotlessApply'
+
+dependencies {
+    // This dependency is exported to consumers, that is to say found on their compile classpath.
+    api 'com.auth0:java-jwt:3.9.0'
+
+    // These dependencies are not exported to consumers
+    implementation 'javax.servlet:javax.servlet-api:4.0.1'
+    implementation 'org.springframework:spring-web:5.1.0.RELEASE'
+    implementation 'org.springframework:spring-context:5.1.0.RELEASE'
+    implementation 'org.jasypt:jasypt:1.9.2'
+
+    // Use JUnit test framework
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+    testImplementation 'org.mockito:mockito-core:2.+'
+    testImplementation 'org.springframework:spring-test:5.1.0.RELEASE'
+    testImplementation 'org.assertj:assertj-core:3.11.1'
+}
