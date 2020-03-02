@@ -1,0 +1,25 @@
+# Ignore Gradle project-specific cache directory
+.gradle
+
+#VSCode
+.classpath
+.project
+.settings/
+.vscode/
+
+#Gradle
+.gradle
+/build/
+bin/
+
+# swap
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]
+
+# Mac nonsense
+*.DS_Store
+
+# Logs
+logs
+*.log
+npm-debug.log*
