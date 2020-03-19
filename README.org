@@ -1,0 +1,83 @@
+#+title: Soffit Authentication Library
+
+* About:
+  uPortal soffits have RESTful backend APIs. This means that when a soffit is running, the backend
+  doesn't have any concept of state - like what user it's talking to. We need to specify in each 
+  request which user is requesting what information. Then it's up to the soffit to verify that the
+  user is who they say they are (/Authentication/), and that they have access to the resources 
+  they're requesting (/Authorization/). 
+  
+  This library was created to externalize the /Authentication/ process. This way, every time we make
+  a soffit we don't have to reinvent the authentication wheel. Also, as added benefits, having
+  this libraries ensures a single, central place to handle changes in the future, as well as ensuring
+  consistent error reporting for every soffit's authentication step.
+
+* Including in a Project:
+  This library was made with convenience in mind. In most cases, only a single method needs to be 
+  called to verify a token, /and/ retrieve the user's personal identifier.
+  
+** Project Setup
+
+   Add the following snippets to your =build.gradle=:
+   #+begin_src groovy
+implementation 'edu.oakland:soffit-auth:<version>'
+   #+end_src
+   *Note:* Remember to replace =<version>= with the correct version number
+
+   This includes this repo as an /implementation/ type library - this means that the library can be
+   used by your project, but isn't exposed to any applications which /use/ your project.
+
+   Now that the project will be pulled into the classpath, we also need to add it to Spring's 
+   component scanning. This might be a requirement that's left out in the future, but for right now
+   we have to add the library's package to Spring's component scanning (this allows spring to 
+   =@Autowire= the project for us).
+
+   #+begin_src java
+     @SoffitApplication
+     @SpringBootApplication
+     //                                       Change this to match your package
+     @ComponentScan({"edu.oakland.soffit.auth", "edu.oakland.advisingsoffit"})
+     public class AdvisingSoffitApplication {
+
+       public static void main(String[] args) {
+         //                    Change this one too
+         SpringApplication.run(AdvisingSoffitApplication.class, args);
+       }
+     }
+   #+end_src
+   
+
+** Adding to Endpoints
+   Now that the library is actually included in your repo and Spring's component scanning will 
+   pick it up, we need to actually use it!
+
+   Your controller file should look something like the following:
+   #+begin_src java
+     package edu.oakland.name;
+
+
+     import edu.oakland.soffit.auth.AuthService;
+     import edu.oakland.soffit.auth.SoffitAuthException;
+
+     public class SomeClass {
+       @Autowired private AuthService authenticator;
+
+       @GetMapping("/student/terms")
+       public List<Term> getTerms(HttpServletRequest request) {
+         String id = authenticator.getClaimFromJWE(request, "id").asString();
+         return service.getTerms(id);
+       }
+     }
+   #+end_src
+
+   You'll notice that we have to include two import statements (technically we only /have/ to
+   include one, but I assume you'll want to catch exceptions when they come up as well...).
+   
+   We also have to have our AuthService =@Autowired= if we want to be able to use it. You can read
+   more about Spring's dependency injection [[https://www.baeldung.com/constructor-injection-in-spring][here]] if you want to.
+   
+   Finally, we call the authenticator service itself. We need to pass it an HttpServletRequest
+   because the JWT we'll be authenticating is attached to the =Authorization= header in the request.
+   We also need to pass it the name of the =Claim= we want from the token. In most cases, it will
+   be the =id=, since it will always be in the token, and it's a unique identifier that every 
+   student has.
