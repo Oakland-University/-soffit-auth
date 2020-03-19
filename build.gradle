@@ -21,17 +21,6 @@ publishing {
             from components.java
         }
     }
-
-    repositories {
-        maven {
-          url "https://maven.oakland.edu/nexus/content/repositories/uPortal"
-          name "nexus"
-          credentials {
-            username "$mavenUser"
-            password "$mavenPassword"
-          }
-        }
-    }
 }
 
 group = 'edu.oakland'

@@ -17,7 +17,8 @@
   called to verify a token, /and/ retrieve the user's personal identifier.
   
 ** Project Setup
-   After following the instructions [[https://code.oakland.edu/ea-developers/training/blob/master/module06/soffits/building-soffits.md][here]] add the following snippets to your =build.gradle=:
+
+   Add the following snippets to your =build.gradle=:
    #+begin_src groovy
 implementation 'edu.oakland:soffit-auth:<version>'
    #+end_src
