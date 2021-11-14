@@ -23,13 +23,14 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 public class LibraryTest {
   private AuthService authorizer = new AuthService();
-  byte[] encodedSecret = javax.xml.bind.DatatypeConverter.parseBase64Binary("CHANGEME");
+  byte[] encodedSecret = jakarta.xml.bind.DatatypeConverter.parseBase64Binary("CHANGEME");
 
   private static String demoToken =
       "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJpc3MiOiJTb2ZmaXQifQ.7vb5lETzLAf3KCUTBLCLi5Hw_yDU1zgr8ZbXlrVT-O5vBxeBCjV16THFomPk9lTJpkf4a6Zb7TtOuyeYqwLkMQ";
   private static String expiredToken =
       "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE1MTYyMzkwMjJ9.C1heqK55YxKuzeIsvTaq3U2Yc3vyHELdhGhM8DqOF2g0bKYCzxa6ZeWzzcIzqauEsu-Q6YzYoV70Wufxflftqg";
-  private static String encryptedToken = "ev2iYPy2XCIioQPg+OWp8ac0mVx6FGic42s8q/TF/a06q0WMJTF4FS9IxVyuL0Di6Jo4qlzOpu8CGdqH+jGUik1pDw2lgadXrBMgj2sdOVRguwslETxJkvONUF+D/XFh7qxfVQHncYHLGIgo9EmwNJ/NGNLDQKtfXiJI2WxhhbBInIHYZv4qY2NJdP54aY9KRAQfkLf98iRkx15XiZKK9wUeIf8LbVs4psN93o/PzrI7bJ4BwEHguxyXIA9Dq1ZDzjqSIwILvBxZVNYCbyhFLJtSHvW4rghlCJJbG2O4+61BPuODb98K9WxaoocHe8Z1ks90Xxcf2zA=";
+  private static String encryptedToken =
+      "ev2iYPy2XCIioQPg+OWp8ac0mVx6FGic42s8q/TF/a06q0WMJTF4FS9IxVyuL0Di6Jo4qlzOpu8CGdqH+jGUik1pDw2lgadXrBMgj2sdOVRguwslETxJkvONUF+D/XFh7qxfVQHncYHLGIgo9EmwNJ/NGNLDQKtfXiJI2WxhhbBInIHYZv4qY2NJdP54aY9KRAQfkLf98iRkx15XiZKK9wUeIf8LbVs4psN93o/PzrI7bJ4BwEHguxyXIA9Dq1ZDzjqSIwILvBxZVNYCbyhFLJtSHvW4rghlCJJbG2O4+61BPuODb98K9WxaoocHe8Z1ks90Xxcf2zA=";
 
   @BeforeEach
   public void stuff() {

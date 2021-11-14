@@ -46,7 +46,7 @@ public class AuthService {
 
   @PostConstruct
   protected void init() {
-    b = javax.xml.bind.DatatypeConverter.parseBase64Binary(SIGNATURE_KEY);
+    b = jakarta.xml.bind.DatatypeConverter.parseBase64Binary(SIGNATURE_KEY);
     textEncryptor.setPassword(ENCRYPTION_PASSWORD);
 
     switch (algorithm) {
